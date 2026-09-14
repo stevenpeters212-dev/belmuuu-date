@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eine kleine Einladung 💌</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Georgia, "Times New Roman", serif;
+    background: radial-gradient(circle at top, #fff7f7 0%, #f8e4e8 45%, #efd1d9 100%);
+    color: #542d38;
+    overflow-x: hidden;
+  }
+
+  .hearts span {
+    position: fixed;
+    bottom: -30px;
+    font-size: 22px;
+    opacity: .25;
+    animation: float 9s linear infinite;
+    pointer-events: none;
+  }
+  .hearts span:nth-child(1){left:8%;animation-delay:0s}
+  .hearts span:nth-child(2){left:22%;animation-delay:2s}
+  .hearts span:nth-child(3){left:45%;animation-delay:5s}
+  .hearts span:nth-child(4){left:70%;animation-delay:1s}
+  .hearts span:nth-child(5){left:88%;animation-delay:4s}
+  @keyframes float {
+    to { transform: translateY(-115vh) rotate(18deg); opacity: 0; }
+  }
+
+  .screen {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+
+  .intro {
+    text-align: center;
+    animation: fadeIn .9s ease;
+  }
+  .intro .tiny { font-size: 15px; letter-spacing: 2px; text-transform: uppercase; opacity: .65; }
+  .intro h1 { font-size: clamp(32px, 8vw, 60px); margin: 12px 0 8px; }
+  .intro p { font-size: 18px; margin-bottom: 28px; }
+
+  .envelope {
+    position: relative;
+    width: min(330px, 78vw);
+    height: 220px;
+    margin: 0 auto 25px;
+    cursor: pointer;
+    filter: drop-shadow(0 18px 22px rgba(91,42,57,.18));
+    transition: transform .35s ease;
+  }
+  .envelope:hover { transform: translateY(-7px) rotate(-1deg); }
+
+  .env-body {
+    position: absolute; inset: 20px 0 0;
+    background: #f5d2d9;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .env-body:before, .env-body:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 0; height: 0;
+    border-style: solid;
+  }
+  .env-body:before {
+    left: 0;
+    border-width: 110px 165px 0 0;
+    border-color: #e9b9c5 transparent transparent transparent;
+  }
+  .env-body:after {
+    right: 0;
+    border-width: 0 165px 110px 0;
+    border-color: transparent #e9b9c5 transparent transparent;
+  }
+  .flap {
+    position: absolute;
+    top: 20px; left: 0;
+    width: 0; height: 0;
+    border-left: 165px solid transparent;
+    border-right: 165px solid transparent;
+    border-top: 105px solid #f8dce2;
+    transform-origin: top center;
+    transition: transform .9s cubic-bezier(.2,.8,.2,1);
+    z-index: 3;
+  }
+  .seal {
+    position: absolute;
+    z-index: 5;
+    left: 50%; top: 104px;
+    transform: translate(-50%,-50%);
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: #a85d72;
+    color: white;
+    display: grid; place-items: center;
+    font-size: 25px;
+    box-shadow: 0 5px 12px rgba(88,38,52,.22);
+    transition: opacity .3s ease;
+  }
+  .letter {
+    position: absolute;
+    z-index: 2;
+    left: 8%; width: 84%;
+    top: 55px; height: 145px;
+    background: #fffdf9;
+    border-radius: 5px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 5px 14px rgba(70,30,40,.1);
+    transition: transform .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .letter strong { font-size: 22px; }
+
+  .open .flap { transform: rotateX(180deg); z-index: 1; }
+  .open .letter { transform: translateY(-105px); z-index: 4; }
+  .open .seal { opacity: 0; }
+
+  .hint { font-size: 14px; opacity: .65; }
+
+  #invite {
+    display: none;
+    max-width: 720px;
+    width: 100%;
+    animation: reveal .9s ease;
+  }
+  .card {
+    background: rgba(255,253,249,.92);
+    border: 1px solid rgba(168,93,114,.18);
+    border-radius: 28px;
+    padding: clamp(28px, 6vw, 60px);
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(91,42,57,.16);
+    position: relative;
+  }
+  .card:before {
+    content: "♡";
+    position: absolute;
+    top: 16px; left: 22px;
+    font-size: 30px; opacity: .25;
+  }
+  .card:after {
+    content: "♡";
+    position: absolute;
+    bottom: 12px; right: 24px;
+    font-size: 36px; opacity: .2;
+  }
+  .eyebrow { letter-spacing: 3px; text-transform: uppercase; font-size: 12px; opacity: .6; }
+  h2 { font-size: clamp(36px, 9vw, 66px); margin: 12px 0; color: #8d4a61; }
+  .dateheart { font-size: 30px; margin: 4px 0 18px; }
+  .message { font-size: clamp(18px, 3vw, 22px); line-height: 1.65; max-width: 560px; margin: 0 auto 30px; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px auto; max-width: 540px; }
+  .choice {
+    border: 2px solid #e4bbc6;
+    background: #fff8fa;
+    color: #683746;
+    border-radius: 18px;
+    padding: 19px 12px;
+    min-height: 72px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 17px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: .25s ease;
+  }
+  .choice:hover { transform: translateY(-3px); border-color: #a85d72; }
+  .choice.selected { background: #a85d72; color: white; border-color: #a85d72; transform: scale(1.02); box-shadow: 0 0 0 4px rgba(168,93,114,.18); }
+  .choice.selected::after { content: "✓"; float:right; font-size:22px; font-weight:bold; margin-left:8px; }
+  .choice.selected small { color:white; }
+  .choice small { display:block; margin-top:5px; opacity:.75; }
+  .response {
+    min-height: 30px;
+    font-size: 18px;
+    margin-top: 18px;
+    color: #8d4a61;
+    font-weight: bold;
+  }
+  .footer { margin-top: 35px; font-size: 15px; opacity: .7; }
+  .button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: #8d4a61;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    border: 0;
+    font: inherit;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+  @keyframes reveal { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+  @media(max-width:560px) {
+    body { overflow-x: hidden; }
+
+    .screen {
+      min-height: 100svh;
+      padding: max(18px, env(safe-area-inset-top))
+               max(16px, env(safe-area-inset-right))
+               max(18px, env(safe-area-inset-bottom))
+               max(16px, env(safe-area-inset-left));
+    }
+
+    .intro {
+      width: 100%;
+      max-width: 390px;
+    }
+
+    .intro .tiny {
+      font-size: 11px;
+      letter-spacing: 1.6px;
+    }
+
+    .intro h1 {
+      font-size: clamp(34px, 11vw, 48px);
+      line-height: 1.05;
+    }
+
+    .intro p {
+      font-size: 16px;
+      margin: 8px 0 22px;
+    }
+
+    .envelope {
+      width: min(290px, 86vw);
+      height: min(205px, 61vw);
+      max-height: 205px;
+      margin-bottom: 18px;
+    }
+
+    .env-body { inset: 18px 0 0; }
+
+    .env-body:before {
+      border-width: min(96px, 30vw) min(145px, 43vw) 0 0;
+    }
+
+    .env-body:after {
+      border-width: 0 min(145px, 43vw) min(96px, 30vw) 0;
+    }
+
+    .flap {
+      top: 18px;
+      border-left-width: min(145px, 43vw);
+      border-right-width: min(145px, 43vw);
+      border-top-width: min(96px, 30vw);
+    }
+
+    .seal {
+      top: 98px;
+      width: 54px;
+      height: 54px;
+      font-size: 23px;
+    }
+
+    .letter {
+      top: 48px;
+      height: 132px;
+      padding: 18px 10px;
+      font-size: 15px;
+    }
+
+    .letter strong { font-size: 19px; }
+
+    .open .letter { transform: translateY(-92px); }
+
+    .hint {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    #invite {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .card {
+      border-radius: 22px;
+      padding: 34px 18px 30px;
+      width: 100%;
+    }
+
+    .card:before { top: 10px; left: 12px; font-size: 24px; }
+    .card:after { bottom: 8px; right: 13px; font-size: 30px; }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      font-size: clamp(34px, 11vw, 52px);
+      line-height: 1.05;
+      margin: 10px 0;
+    }
+
+    .dateheart {
+      font-size: 25px;
+      margin-bottom: 14px;
+    }
+
+    .message {
+      font-size: 17px;
+      line-height: 1.58;
+      margin-bottom: 24px;
+    }
+
+    .choices {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 20px auto;
+      width: 100%;
+    }
+
+    .choice {
+      width: 100%;
+      min-height: 74px;
+      padding: 16px 12px;
+      font-size: 17px;
+    }
+
+    .choice small { font-size: 13px; }
+
+    .response {
+      font-size: 16px;
+      line-height: 1.45;
+      min-height: 46px;
+      margin-top: 14px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+  }
+
+  @media(max-width:360px) {
+    .screen { padding-left: 12px; padding-right: 12px; }
+    .envelope { width: 270px; }
+    .card { padding-left: 15px; padding-right: 15px; }
+    .message { font-size: 16px; }
+  }
+
+  @media (hover: none) {
+    .envelope:hover,
+    .choice:hover { transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="hearts" aria-hidden="true">
+  <span>♡</span><span>♥</span><span>♡</span><span>♥</span><span>♡</span>
+</div>
+
+<section class="screen" id="opening">
+  <div class="intro">
+    <div class="tiny">Eine kleine Überraschung für</div>
+    <h1>Belmuuu 💕</h1>
+    <p>Du hast Post bekommen …</p>
+
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Brief öffnen">
+      <div class="env-body"></div>
+      <div class="letter"><strong>Für Belmuuu</strong><br><span>💌</span></div>
+      <div class="flap"></div>
+      <div class="seal">♥</div>
+    </div>
+
+    <div class="hint">Klick auf den Brief, um ihn zu öffnen ✨</div>
+  </div>
+</section>
+
+<section class="screen" id="invite">
+  <div class="card">
+    <div class="eyebrow">Eine Einladung von Herzen</div>
+    <h2>Hey Belmuuu</h2>
+    <div class="dateheart">🍝 ♥ ✨</div>
+
+    <div class="message">
+      Ich würde dich gerne zu einem kleinen
+      <strong>L’Osteria Date</strong> einladen. ❤️<br><br>
+      Ein Abend mit leckerem Essen, schönen Gesprächen,
+      ganz viel Lachen und hoffentlich einer kleinen Portion Romantik. 🥰<br><br>
+      Jetzt kommt nur noch die wichtigste Entscheidung:
+      <strong>Wann darf ich dich ausführen?</strong> 😌💕
+    </div>
+
+    <div class="choices">
+      <button class="choice" data-day="Mittwoch">
+        Mittwoch
+        <small>19:00 Uhr</small>
+      </button>
+      <button class="choice" data-day="Donnerstag">
+        Donnerstag
+        <small>19:00 Uhr</small>
+      </button>
+    </div>
+
+    <div class="response" id="response"></div>
+
+    <div class="footer">
+      Ich freue mich auf dich, Belmuuu. ❤️
+    </div>
+  </div>
+</section>
+
+<script>
+  const envelope = document.getElementById('envelope');
+  const opening = document.getElementById('opening');
+  const invite = document.getElementById('invite');
+  const response = document.getElementById('response');
+
+  function openLetter() {
+    envelope.classList.add('open');
+    setTimeout(() => {
+      opening.style.display = 'none';
+      invite.style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }, 1050);
+  }
+
+  envelope.addEventListener('click', openLetter);
+  envelope.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openLetter();
+    }
+  });
+
+  const savedDay = localStorage.getItem('selectedDay');
+  if (savedDay) {
+    const savedBtn = document.querySelector(`.choice[data-day="${savedDay}"]`);
+    if (savedBtn) {
+      savedBtn.classList.add('selected');
+      response.textContent = `✓ Ausgewählt: ${savedDay} um 19:00 Uhr. 🥰❤️`;
+    }
+  }
+
+  document.querySelectorAll('.choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.choice').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const day = btn.dataset.day;
+      localStorage.setItem('selectedDay', day);
+      response.textContent = `✓ Ausgewählt: ${day} um 19:00 Uhr. 🥰❤️`;
+    });
+  });
+</script>
+</body>
+</html>
